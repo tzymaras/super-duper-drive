@@ -11,20 +11,31 @@
     <body class="p-3 mb-2 bg-light text-black">
         <div class="container">
             <div id="logoutDiv">
-                <form action="#" method="POST">
+                <form action="#" method="POST" th:action="@{/logout}">
                     <button type="submit" class="btn btn-secondary float-right">Logout</button>
                 </form>
             </div>
+
+            <div th:if="${noteActionSuccess}" th:text="${noteActionSuccess}" class="alert alert-success alert-dismissible">
+                <span>placeholder</span>
+            </div>
+
+            <div th:if="${noteActionError}" th:text="${noteActionError}" class="alert alert-danger">
+                <span>signup error placeholder</span>
+            </div>
+
             <div id="contentDiv" style="clear: right;">
                 <nav style="clear: right;">
                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                        <a class="nav-item nav-link active" id="nav-files-tab" data-toggle="tab" href="#nav-files" role="tab" aria-controls="nav-files" aria-selected="true">Files</a>
-                        <a class="nav-item nav-link" id="nav-notes-tab" data-toggle="tab" href="#nav-notes" role="tab" aria-controls="nav-notes" aria-selected="false">Notes</a>
-                        <a class="nav-item nav-link" id="nav-credentials-tab" data-toggle="tab" href="#nav-credentials" role="tab" aria-controls="nav-credentials" aria-selected="false">Credentials</a>
+                        <a th:classappend="${activeTab.equals('files')} ? active : ''" class="nav-item nav-link" id="nav-files-tab" data-toggle="tab" href="#nav-files" role="tab" aria-controls="nav-files" aria-selected="true">Files</a>
+                        <a th:classappend="${activeTab.equals('notes')} ? active : ''" class="nav-item nav-link" id="nav-notes-tab" data-toggle="tab" href="#nav-notes" role="tab" aria-controls="nav-notes" aria-selected="false">Notes</a>
+                        <a th:classappend="${activeTab.equals('creds')} ? active : ''" class="nav-item nav-link" id="nav-credentials-tab" data-toggle="tab" href="#nav-credentials" role="tab" aria-controls="nav-credentials" aria-selected="false">Credentials</a>
                     </div>
                 </nav>
+
                 <div class="tab-content" id="nav-tabContent">
-                    <div class="tab-pane fade show active" id="nav-files" role="tabpanel" aria-labelledby="nav-files-tab">
+                    <!-- files-->
+                    <div th:classappend="${activeTab.equals('files')} ? 'active show' : ''" class="tab-pane fade" id="nav-files" role="tabpanel" aria-labelledby="nav-files-tab">
                         <form action="#" enctype="multipart/form-data" method="POST">
                             <div class="container">
                                 <div class="row" style="margin: 1em;">
@@ -40,6 +51,7 @@
                                 </div>
                             </div>
                         </form>
+
                         <div class="table-responsive">
                             <table class="table table-striped" id="fileTable">
                                 <thead>
@@ -60,10 +72,12 @@
                             </table>
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="nav-notes" role="tabpanel" aria-labelledby="nav-notes-tab">
-                        <button style="margin: 0.25em;" type="button" class="btn btn-info float-right" onclick="showNoteModal()">
+
+                    <!-- notes-->
+                    <div th:classappend="${activeTab.equals('notes')} ? 'active show' : ''" class="tab-pane fade" id="nav-notes" role="tabpanel" aria-labelledby="nav-notes-tab">
+                        <a id="create-note-btn" style="margin: 0.25em;" type="button" class="btn btn-info float-right">
                             + Add a New Note
-                        </button>
+                        </a>
 
                         <div class="table-responsive">
                             <table class="table table-striped" id="userTable">
@@ -75,13 +89,21 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
+                                    <tr th:each="note : ${userNotes}">
                                         <td>
-                                            <button type="button" class="btn btn-success">Edit</button>
-                                            <a class="btn btn-danger">Delete</a>
+                                            <a class="btn btn-success edit-note"
+                                               th:data-note-id="${note.noteId}"
+                                               th:data-note-title="${note.noteTitle}"
+                                               th:data-note-desc="${note.noteDescription}">Edit</a>
+
+                                            <form method="post" action="#" th:action="@{/notes}" style="display: inline-block">
+                                                <input type="hidden" name="noteId" th:value="${note.noteId}"/>
+                                                <input type="hidden" name="action" value="delete"/>
+                                                <input type="submit" class="btn btn-danger delete-note-btn" value="Delete"/>
+                                            </form>
                                         </td>
-                                        <th scope="row">Example Note Title</th>
-                                        <td>Example Note Description </td>
+                                        <th scope="row" th:text="${note.noteTitle}">Example Note Title</th>
+                                        <td th:text="${note.noteDescription}">Example Note Description </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -97,15 +119,18 @@
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <form action="#" method="POST">
+                                        <form action="#" method="POST" th:action="@{/notes}" th:object="${noteForm}">
                                             <input type="hidden" name="noteId" id="note-id">
+                                            <input type="hidden" name="action" id="note-action" value="create">
+
                                             <div class="form-group">
                                                 <label for="note-title" class="col-form-label">Title</label>
-                                                <input type="text" name= "noteTitle" class="form-control" id="note-title" maxlength="20" required>
+                                                <input type="text" name= "noteTitle" class="form-control" th:field="${noteForm.noteTitle}" id="note-title" maxlength="20" required>
                                             </div>
+
                                             <div class="form-group">
                                                 <label for="note-description" class="col-form-label">Description</label>
-                                                <textarea class="form-control" name="noteDescription" id="note-description" rows="5" maxlength="1000" required></textarea>
+                                                <textarea class="form-control" name="noteDescription" th:field="${noteForm.noteDescription}" id="note-description" rows="5" maxlength="1000" required></textarea>
                                             </div>
                                             <button id="noteSubmit" type="submit" class="d-none"></button>
                                         </form>
@@ -118,7 +143,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="nav-credentials" role="tabpanel" aria-labelledby="nav-credentials-tab">
+
+                    <!-- credentials-->
+                    <div th:classappend="${activeTab.equals('creds')} ? 'active show' : ''" class="tab-pane fade" id="nav-credentials" role="tabpanel" aria-labelledby="nav-credentials-tab">
                         <button style="margin: 0.25em;" type="button" class="btn btn-info float-right" onclick="showCredentialModal()">
                             + Add a New Credential
                         </button>
@@ -192,22 +219,26 @@
 
         <!--For opening the note modal-->
         <script type="text/javascript">
-            // For opening the note modal
-            function showNoteModal(noteId, noteTitle, noteDescription) {
-                $('#note-id').val(noteId ? noteId : '');
-                $('#note-title').val(noteTitle ? noteTitle : '');
-                $('#note-description').val(noteDescription ? noteDescription : '');
-                $('#noteModal').modal('show');
-            }
+            $(document).ready(function () {
+                $('#create-note-btn').on('click', function() {
+                    $('#note-id').val('');
+                    $('#note-title').val('');
+                    $('#note-description').val('');
 
-            // For opening the credentials modal
-            function showCredentialModal(credentialId, url, username, password) {
-                $('#credential-id').val(credentialId ? credentialId : '');
-                $('#credential-url').val(url ? url : '');
-                $('#credential-username').val(username ? username : '');
-                $('#credential-password').val(password ? password : '');
-                $('#credentialModal').modal('show');
-            }
+                    $('#noteModal').modal('show');
+                });
+
+                $('.edit-note').on('click', function(event) {
+                    let $target = $(event.target);
+
+                    $('#note-id').val($target.data('note-id'));
+                    $('#note-title').val($target.data('note-title'));
+                    $('#note-description').val($target.data('note-desc'));
+                    $('#note-action').val('edit');
+
+                    $('#noteModal').modal('show');
+                });
+            }());
         </script>
     </body>
 </html>
