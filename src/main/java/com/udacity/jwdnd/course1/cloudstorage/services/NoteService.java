@@ -18,8 +18,8 @@ public class NoteService {
         return this.noteMapper.insert(note);
     }
 
-    public int delete(Integer noteId, Integer userId) {
-        return this.noteMapper.delete(noteId, userId);
+    public int delete(Note note) {
+        return this.noteMapper.delete(note);
     }
 
     public int update(Note note) {

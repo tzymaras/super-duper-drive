@@ -29,7 +29,7 @@ public class NoteController {
     @PostMapping
     public String noteAction(Authentication authentication, NoteForm noteForm, RedirectAttributes redirectAttributes) {
         User authenticatedUser = this.userService.getUserByUsername(authentication.getName());
-        Note note = new Note(null, noteForm.getNoteTitle(), noteForm.getNoteDescription(), authenticatedUser.getUserId());
+        Note note = new Note(noteForm.getNoteTitle(), noteForm.getNoteDescription(), authenticatedUser.getUserId());
 
         redirectAttributes.addFlashAttribute("activeTab", "notes");
 
@@ -54,7 +54,8 @@ public class NoteController {
                 redirectAttributes.addFlashAttribute("actionSuccess", "Note successfully updated");
                 break;
             case "delete":
-                if (this.noteService.delete(noteForm.getNoteId(), authenticatedUser.getUserId()) == 0) {
+                note.setNoteId(noteForm.getNoteId());
+                if (this.noteService.delete(note) == 0) {
                     this.logger.error(String.format("failed deleting note: %s", noteForm));
                     redirectAttributes.addFlashAttribute("actionError", Constants.ERROR_MSG_INTERNAL_ERROR);
                     return "redirect:home";

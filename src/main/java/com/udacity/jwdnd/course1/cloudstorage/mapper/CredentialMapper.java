@@ -12,7 +12,7 @@ public interface CredentialMapper {
     int insert(Credential credential);
 
     @Delete("DELETE FROM credentials WHERE credentialid=#{credentialId} AND userid=#{userId}")
-    int delete(Integer credentialId, Integer userId);
+    int delete(Credential credential);
 
     @Update("UPDATE credentials SET url=#{url}, username=#{username}, key=#{key}, password=#{password} " +
             "WHERE credentialid=#{credentialId} AND userid=#{userId}")

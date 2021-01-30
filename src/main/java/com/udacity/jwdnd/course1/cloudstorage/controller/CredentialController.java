@@ -54,7 +54,8 @@ public class CredentialController {
                 redirectAttributes.addFlashAttribute("actionSuccess", "Credentials successfully updated");
                 break;
             case "delete":
-                if (this.credentialService.delete(credentialForm.getCredentialId(), authenticatedUser.getUserId()) == 0) {
+                credential.setCredentialId(credentialForm.getCredentialId());
+                if (this.credentialService.delete(credential) == 0) {
                     this.logger.error(String.format("failed deleting credential: %s", credential));
                     redirectAttributes.addFlashAttribute("actionError", Constants.ERROR_MSG_INTERNAL_ERROR);
                     return "redirect:home";
@@ -71,10 +72,8 @@ public class CredentialController {
 
     private Credential createCredentialFromForm(CredentialForm form, User user) {
         return new Credential(
-                null,
                 form.getUrl(),
                 form.getUsername(),
-                null,
                 form.getPassword(),
                 user.getUserId()
         );

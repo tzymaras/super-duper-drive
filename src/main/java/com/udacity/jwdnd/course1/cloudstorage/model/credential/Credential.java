@@ -13,13 +13,17 @@ public class Credential {
      */
     private String plainPassword;
 
-    public Credential(Integer credentialId, String url, String username, String key, String password, Integer userId) {
-        this.credentialId = credentialId;
+    public Credential(String url, String username, String password, Integer userId) {
         this.url = url;
         this.username = username;
-        this.key = key;
         this.password = password;
         this.userId = userId;
+    }
+
+    public Credential(Integer credentialId, String url, String username, String key, String password, Integer userId) {
+        this(url, username, password, userId);
+        this.credentialId = credentialId;
+        this.key = key;
     }
 
     public Integer getCredentialId() {
