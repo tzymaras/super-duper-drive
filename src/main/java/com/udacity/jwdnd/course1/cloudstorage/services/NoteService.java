@@ -18,8 +18,8 @@ public class NoteService {
         return this.noteMapper.insert(note);
     }
 
-    public int delete(Integer noteId) {
-        return this.noteMapper.delete(noteId);
+    public int delete(Integer noteId, Integer userId) {
+        return this.noteMapper.delete(noteId, userId);
     }
 
     public int update(Note note) {
@@ -28,9 +28,5 @@ public class NoteService {
 
     public List<Note> getAllNotesForUser(Integer userId) {
         return this.noteMapper.getAllNotesForUser(userId);
-    }
-
-    public boolean noteExistsForUser(Integer noteId, Integer userId) {
-        return this.noteMapper.noteExistsForUser(noteId, userId);
     }
 }

@@ -28,18 +28,14 @@ public class NoteController {
 
     @PostMapping
     public String noteAction(Authentication authentication, NoteForm noteForm, RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute("activeTab", "notes");
-
         User authenticatedUser = this.userService.getUserByUsername(authentication.getName());
-        if (!noteForm.getAction().equals("create") && !this.isUserResourceOwner(authenticatedUser, noteForm)) {
-            redirectAttributes.addFlashAttribute("noteActionError", "unauthorized action");
-            return "redirect:home";
-        }
+        Note note = new Note(null, noteForm.getNoteTitle(), noteForm.getNoteDescription(), authenticatedUser.getUserId());
+
+        redirectAttributes.addFlashAttribute("activeTab", "notes");
 
         switch (noteForm.getAction()) {
             case "create":
-                Note newNote = new Note(null, noteForm.getNoteTitle(), noteForm.getNoteDescription(), authenticatedUser.getUserId());
-                if (this.noteService.insert(newNote) == 0) {
+                if (this.noteService.insert(note) == 0) {
                     this.logger.error(String.format("failed creating note: %s", noteForm));
                     redirectAttributes.addFlashAttribute("noteActionError", Constants.ERROR_MSG_INTERNAL_ERROR);
                     return "redirect:home";
@@ -48,7 +44,7 @@ public class NoteController {
                 redirectAttributes.addFlashAttribute("noteActionSuccess", "Note successfully created");
                 break;
             case "edit":
-                Note note = new Note(noteForm.getNoteId(), noteForm.getNoteTitle(), noteForm.getNoteDescription(), authenticatedUser.getUserId());
+                note.setNoteId(noteForm.getNoteId());
                 if (this.noteService.update(note) == 0) {
                     this.logger.error(String.format("failed updating note: %s", noteForm));
                     redirectAttributes.addFlashAttribute("noteActionError", Constants.ERROR_MSG_INTERNAL_ERROR);
@@ -58,7 +54,7 @@ public class NoteController {
                 redirectAttributes.addFlashAttribute("noteActionSuccess", "Note successfully updated");
                 break;
             case "delete":
-                if (this.noteService.delete(noteForm.getNoteId()) == 0) {
+                if (this.noteService.delete(noteForm.getNoteId(), authenticatedUser.getUserId()) == 0) {
                     this.logger.error(String.format("failed deleting note: %s", noteForm));
                     redirectAttributes.addFlashAttribute("noteActionError", Constants.ERROR_MSG_INTERNAL_ERROR);
                     return "redirect:home";
@@ -71,10 +67,5 @@ public class NoteController {
         }
 
         return "redirect:home";
-    }
-
-    // TODO move to note service or other permission checking class
-    private boolean isUserResourceOwner(User user, NoteForm noteForm) {
-        return this.noteService.noteExistsForUser(noteForm.getNoteId(), user.getUserId());
     }
 }

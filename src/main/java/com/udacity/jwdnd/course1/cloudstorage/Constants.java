@@ -3,9 +3,9 @@ package com.udacity.jwdnd.course1.cloudstorage;
 import com.udacity.jwdnd.course1.cloudstorage.services.security.PasswordValidator;
 
 public interface Constants {
-    public static final String ERROR_MSG_SIGNUP_USERNAME_EXISTS = "username exists already";
-    public static final String ERROR_MSG_INTERNAL_ERROR = "there was an internal error. please try again later";
-    public static final String ERROR_MSG_SIGNUP_INVALID_PASSWORD = String.format(
+    String ERROR_MSG_SIGNUP_USERNAME_EXISTS = "username exists already";
+    String ERROR_MSG_INTERNAL_ERROR = "there was an internal error. please try again later";
+    String ERROR_MSG_SIGNUP_INVALID_PASSWORD = String.format(
         "invalid password. your password should contain:\n" +
         "at least %d and at most %d characters,\n" +
         "at least one digit,\n" +
