@@ -38,8 +38,9 @@ public class UserService {
      * @return int number of inserted rows
      */
     public int createUser(User user) {
-        SecureRandom secureRandom = new SecureRandom();
         byte[] salt = new byte[16];
+
+        SecureRandom secureRandom = new SecureRandom();
         secureRandom.nextBytes(salt);
 
         String encodedSalt = Base64.getEncoder().encodeToString(salt);

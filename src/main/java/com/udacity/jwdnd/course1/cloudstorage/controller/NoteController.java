@@ -56,7 +56,7 @@ public class NoteController {
             case "delete":
                 if (this.noteService.delete(noteForm.getNoteId(), authenticatedUser.getUserId()) == 0) {
                     this.logger.error(String.format("failed deleting note: %s", noteForm));
-                    redirectAttributes.addFlashAttribute("noteActionError", Constants.ERROR_MSG_INTERNAL_ERROR);
+                    redirectAttributes.addFlashAttribute("actionError", Constants.ERROR_MSG_INTERNAL_ERROR);
                     return "redirect:home";
                 }
 

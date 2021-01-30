@@ -4,7 +4,6 @@ public class NoteForm {
     private Integer noteId;
     private String noteTitle;
     private String noteDescription;
-    private Integer userId;
     private String action;
 
     public Integer getNoteId() {
@@ -31,14 +30,6 @@ public class NoteForm {
         this.noteDescription = noteDescription;
     }
 
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
     public String getAction() {
         return action;
     }
@@ -53,7 +44,6 @@ public class NoteForm {
             "noteId=" + noteId +
             ", noteTitle='" + noteTitle + '\'' +
             ", noteDescription='" + noteDescription + '\'' +
-            ", userId=" + userId +
             ", action='" + action + '\'' +
             '}';
     }
