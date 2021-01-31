@@ -18,19 +18,19 @@ public class FileService {
         return this.fileMapper.get(fileName, userId);
     }
 
-    public int insert(File file) {
-        return this.fileMapper.insert(file);
-    }
-
     public List<File> getAllUserFiles(Integer userId) {
         return this.fileMapper.getAllUserFiles(userId);
     }
 
-    public int delete(String filename, Integer userId) {
-        return this.fileMapper.delete(filename, userId);
-    }
-
     public boolean fileExists(String filename, Integer userId) {
         return this.fileMapper.fileExists(filename, userId);
+    }
+
+    public int insert(File file) {
+        return this.fileMapper.insert(file);
+    }
+
+    public int delete(String filename, Integer userId) {
+        return this.fileMapper.delete(filename, userId);
     }
 }

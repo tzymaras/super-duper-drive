@@ -26,7 +26,11 @@ public class FileController {
     }
 
     @PostMapping("/upload")
-    public String upload(@RequestParam("fileUpload") MultipartFile multipartFile, Authentication authentication, RedirectAttributes redirectAttributes) throws IOException {
+    public String upload(
+            @RequestParam("fileUpload") MultipartFile multipartFile,
+            Authentication authentication,
+            RedirectAttributes redirectAttributes
+    ) throws IOException {
         User user = this.userService.getUserByUsername(authentication.getName());
 
         String fileName = multipartFile.getOriginalFilename();
@@ -50,7 +54,7 @@ public class FileController {
 
         if (this.fileService.insert(file) == 0) {
             this.logger.error(String.format("failed uploading file:%s", file));
-            redirectAttributes.addFlashAttribute("errorMessage", "an internal error occured, try again later");
+            redirectAttributes.addFlashAttribute("errorMessage", "an internal error occured, please try again later");
             return "redirect:/home";
         }
 

@@ -1,4 +1,4 @@
-package com.udacity.jwdnd.course1.cloudstorage.model.credential;
+package com.udacity.jwdnd.course1.cloudstorage.model;
 
 public class Credential {
     private Integer credentialId;
@@ -12,19 +12,6 @@ public class Credential {
      * NOT STORED IN DB. used only to display the unencrypted password to the user when editing a credential
      */
     private String plainPassword;
-
-    public Credential(String url, String username, String password, Integer userId) {
-        this.url = url;
-        this.username = username;
-        this.password = password;
-        this.userId = userId;
-    }
-
-    public Credential(Integer credentialId, String url, String username, String key, String password, Integer userId) {
-        this(url, username, password, userId);
-        this.credentialId = credentialId;
-        this.key = key;
-    }
 
     public Integer getCredentialId() {
         return credentialId;
@@ -91,7 +78,6 @@ public class Credential {
                 ", key='" + key + '\'' +
                 ", password='" + password + '\'' +
                 ", userId=" + userId +
-                ", plainPassword='" + plainPassword + '\'' +
                 '}';
     }
 }

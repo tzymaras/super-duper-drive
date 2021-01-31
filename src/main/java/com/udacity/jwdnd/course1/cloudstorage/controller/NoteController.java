@@ -1,17 +1,11 @@
 package com.udacity.jwdnd.course1.cloudstorage.controller;
 
-import com.udacity.jwdnd.course1.cloudstorage.Constants;
-import com.udacity.jwdnd.course1.cloudstorage.model.User;
-import com.udacity.jwdnd.course1.cloudstorage.model.note.Note;
-import com.udacity.jwdnd.course1.cloudstorage.model.note.NoteForm;
-import com.udacity.jwdnd.course1.cloudstorage.services.NoteService;
-import com.udacity.jwdnd.course1.cloudstorage.services.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.udacity.jwdnd.course1.cloudstorage.model.*;
+import com.udacity.jwdnd.course1.cloudstorage.services.*;
+import org.slf4j.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -27,37 +21,35 @@ public class NoteController {
     }
 
     @PostMapping
-    public String noteAction(Authentication authentication, NoteForm noteForm, RedirectAttributes redirectAttributes) {
-        User authenticatedUser = this.userService.getUserByUsername(authentication.getName());
-        Note note = new Note(noteForm.getNoteTitle(), noteForm.getNoteDescription(), authenticatedUser.getUserId());
-
+    public String noteAction(@RequestParam("action") String action, Authentication authentication, Note note, RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute("activeTab", "notes");
 
-        switch (noteForm.getAction()) {
+        User authenticatedUser = this.userService.getUserByUsername(authentication.getName());
+        note.setUserId(authenticatedUser.getUserId());
+
+        switch (action) {
             case "create":
                 if (this.noteService.insert(note) == 0) {
-                    this.logger.error(String.format("failed creating note: %s", noteForm));
-                    redirectAttributes.addFlashAttribute("errorMessage", Constants.ERROR_MSG_INTERNAL_ERROR);
+                    this.logger.error(String.format("failed creating note: %s", note));
+                    redirectAttributes.addFlashAttribute("errorMessage", "there was an internal error. please try again later");
                     return "redirect:home";
                 }
 
                 redirectAttributes.addFlashAttribute("successMessage", "Note successfully created");
                 break;
             case "edit":
-                note.setNoteId(noteForm.getNoteId());
                 if (this.noteService.update(note) == 0) {
-                    this.logger.error(String.format("failed updating note: %s", noteForm));
-                    redirectAttributes.addFlashAttribute("errorMessage", Constants.ERROR_MSG_INTERNAL_ERROR);
+                    this.logger.error(String.format("failed updating note: %s", note));
+                    redirectAttributes.addFlashAttribute("errorMessage", "there was an internal error. please try again later");
                     return "redirect:home";
                 }
 
                 redirectAttributes.addFlashAttribute("successMessage", "Note successfully updated");
                 break;
             case "delete":
-                note.setNoteId(noteForm.getNoteId());
                 if (this.noteService.delete(note) == 0) {
-                    this.logger.error(String.format("failed deleting note: %s", noteForm));
-                    redirectAttributes.addFlashAttribute("errorMessage", Constants.ERROR_MSG_INTERNAL_ERROR);
+                    this.logger.error(String.format("failed deleting note: %s", note));
+                    redirectAttributes.addFlashAttribute("errorMessage", "there was an internal error. please try again later");
                     return "redirect:home";
                 }
 
