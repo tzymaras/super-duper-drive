@@ -9,7 +9,7 @@ public class HomePage {
 
     public HomePage(WebDriver webDriver) {
         PageFactory.initElements(webDriver, this);
-        this.webDriverWait = new WebDriverWait(webDriver, 5);
+        this.webDriverWait = new WebDriverWait(webDriver, 10);
     }
 
     @FindBy(id = "logoutForm")
