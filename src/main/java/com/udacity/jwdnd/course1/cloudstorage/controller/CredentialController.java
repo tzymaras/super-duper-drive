@@ -37,34 +37,34 @@ public class CredentialController {
             case "create":
                 if (this.credentialService.insert(credential) == 0) {
                     this.logger.error(String.format("failed creating credential: %s", credential));
-                    redirectAttributes.addFlashAttribute("actionError", Constants.ERROR_MSG_INTERNAL_ERROR);
+                    redirectAttributes.addFlashAttribute("errorMessage", Constants.ERROR_MSG_INTERNAL_ERROR);
                     return "redirect:home";
                 }
 
-                redirectAttributes.addFlashAttribute("actionSuccess", "Credentials successfully created");
+                redirectAttributes.addFlashAttribute("successMessage", "Credentials successfully created");
                 break;
             case "edit":
                 credential.setCredentialId(credentialForm.getCredentialId());
                 if (this.credentialService.update(credential) == 0) {
                     this.logger.error(String.format("failed updating credential: %s", credential));
-                    redirectAttributes.addFlashAttribute("actionError", Constants.ERROR_MSG_INTERNAL_ERROR);
+                    redirectAttributes.addFlashAttribute("errorMessage", Constants.ERROR_MSG_INTERNAL_ERROR);
                     return "redirect:home";
                 }
 
-                redirectAttributes.addFlashAttribute("actionSuccess", "Credentials successfully updated");
+                redirectAttributes.addFlashAttribute("successMessage", "Credentials successfully updated");
                 break;
             case "delete":
                 credential.setCredentialId(credentialForm.getCredentialId());
                 if (this.credentialService.delete(credential) == 0) {
                     this.logger.error(String.format("failed deleting credential: %s", credential));
-                    redirectAttributes.addFlashAttribute("actionError", Constants.ERROR_MSG_INTERNAL_ERROR);
+                    redirectAttributes.addFlashAttribute("errorMessage", Constants.ERROR_MSG_INTERNAL_ERROR);
                     return "redirect:home";
                 }
 
-                redirectAttributes.addFlashAttribute("actionSuccess", "Credentials successfully deleted");
+                redirectAttributes.addFlashAttribute("successMessage", "Credentials successfully deleted");
                 break;
             default:
-                redirectAttributes.addFlashAttribute("actionError", "unknown action");
+                redirectAttributes.addFlashAttribute("errorMessage", "unknown action");
         }
 
         return "redirect:home";

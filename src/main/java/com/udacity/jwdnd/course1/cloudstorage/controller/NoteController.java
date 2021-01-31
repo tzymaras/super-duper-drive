@@ -37,34 +37,34 @@ public class NoteController {
             case "create":
                 if (this.noteService.insert(note) == 0) {
                     this.logger.error(String.format("failed creating note: %s", noteForm));
-                    redirectAttributes.addFlashAttribute("actionError", Constants.ERROR_MSG_INTERNAL_ERROR);
+                    redirectAttributes.addFlashAttribute("errorMessage", Constants.ERROR_MSG_INTERNAL_ERROR);
                     return "redirect:home";
                 }
 
-                redirectAttributes.addFlashAttribute("actionSuccess", "Note successfully created");
+                redirectAttributes.addFlashAttribute("successMessage", "Note successfully created");
                 break;
             case "edit":
                 note.setNoteId(noteForm.getNoteId());
                 if (this.noteService.update(note) == 0) {
                     this.logger.error(String.format("failed updating note: %s", noteForm));
-                    redirectAttributes.addFlashAttribute("actionError", Constants.ERROR_MSG_INTERNAL_ERROR);
+                    redirectAttributes.addFlashAttribute("errorMessage", Constants.ERROR_MSG_INTERNAL_ERROR);
                     return "redirect:home";
                 }
 
-                redirectAttributes.addFlashAttribute("actionSuccess", "Note successfully updated");
+                redirectAttributes.addFlashAttribute("successMessage", "Note successfully updated");
                 break;
             case "delete":
                 note.setNoteId(noteForm.getNoteId());
                 if (this.noteService.delete(note) == 0) {
                     this.logger.error(String.format("failed deleting note: %s", noteForm));
-                    redirectAttributes.addFlashAttribute("actionError", Constants.ERROR_MSG_INTERNAL_ERROR);
+                    redirectAttributes.addFlashAttribute("errorMessage", Constants.ERROR_MSG_INTERNAL_ERROR);
                     return "redirect:home";
                 }
 
-                redirectAttributes.addFlashAttribute("actionSuccess", "Note successfully deleted");
+                redirectAttributes.addFlashAttribute("successMessage", "Note successfully deleted");
                 break;
             default:
-                redirectAttributes.addFlashAttribute("actionError", "unknown action");
+                redirectAttributes.addFlashAttribute("errorMessage", "unknown action");
         }
 
         return "redirect:home";

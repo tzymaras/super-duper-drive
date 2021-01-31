@@ -6,17 +6,17 @@ import com.udacity.jwdnd.course1.cloudstorage.services.security.EncryptionServic
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
-import java.util.Base64;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class CredentialService {
     private final CredentialMapper credentialMapper;
-    private static final EncryptionService encryptionService = new EncryptionService();
+    private final EncryptionService encryptionService;
 
-    public CredentialService(CredentialMapper credentialMapper) {
+    public CredentialService(CredentialMapper credentialMapper, EncryptionService encryptionService) {
         this.credentialMapper = credentialMapper;
+        this.encryptionService = encryptionService;
     }
 
     public int insert(Credential credential) {
@@ -37,14 +37,13 @@ public class CredentialService {
 
     public List<Credential> getAllCredentialsForUser(Integer userId) {
         return this.credentialMapper.getAllCredentialsForUser(userId).stream()
-            .peek(CredentialService::decryptCredentialPassword)
-            .collect(Collectors.toList());
+                .peek(this::decryptCredentialPassword)
+                .collect(Collectors.toList());
     }
 
-    private static void decryptCredentialPassword(Credential cr) {
-        cr.setPlainPassword(
-            encryptionService.decryptValue(cr.getPassword(), cr.getKey())
-        );
+    private void decryptCredentialPassword(Credential cr) {
+        String decryptedPassword = this.encryptionService.decryptValue(cr.getPassword(), cr.getKey());
+        cr.setPlainPassword(decryptedPassword);
     }
 
     private void encryptPassword(Credential credential) {

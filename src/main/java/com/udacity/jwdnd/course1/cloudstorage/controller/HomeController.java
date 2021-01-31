@@ -1,9 +1,11 @@
 package com.udacity.jwdnd.course1.cloudstorage.controller;
 
+import com.udacity.jwdnd.course1.cloudstorage.model.File;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
 import com.udacity.jwdnd.course1.cloudstorage.model.credential.Credential;
 import com.udacity.jwdnd.course1.cloudstorage.model.note.Note;
 import com.udacity.jwdnd.course1.cloudstorage.services.CredentialService;
+import com.udacity.jwdnd.course1.cloudstorage.services.FileService;
 import com.udacity.jwdnd.course1.cloudstorage.services.NoteService;
 import com.udacity.jwdnd.course1.cloudstorage.services.UserService;
 import org.springframework.security.core.Authentication;
@@ -20,12 +22,14 @@ import java.util.List;
 public class HomeController {
     private final NoteService noteService;
     private final CredentialService credentialService;
+    private final FileService fileService;
     private final UserService userService;
 
-    public HomeController(NoteService noteService, UserService userService, CredentialService credentialService) {
+    public HomeController(NoteService noteService, UserService userService, CredentialService credentialService, FileService fileService) {
         this.noteService = noteService;
         this.userService = userService;
         this.credentialService = credentialService;
+        this.fileService = fileService;
     }
 
     @GetMapping
@@ -33,9 +37,11 @@ public class HomeController {
         User user = this.userService.getUserByUsername(authentication.getName());
         List<Note> userNotes = this.noteService.getAllNotesForUser(user.getUserId());
         List<Credential> userCredentials = this.credentialService.getAllCredentialsForUser(user.getUserId());
+        List<File> userFiles = this.fileService.getAllUserFiles(user.getUserId());
 
         model.addAttribute("userNotes", userNotes);
         model.addAttribute("userCredentials", userCredentials);
+        model.addAttribute("userFiles", userFiles);
 
         return "home";
     }

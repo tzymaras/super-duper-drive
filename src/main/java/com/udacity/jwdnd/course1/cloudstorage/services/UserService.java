@@ -31,12 +31,6 @@ public class UserService {
         return PasswordValidator.isPasswordValid(password);
     }
 
-    /**
-     * Creates a new {@code User} entry in the Users table
-     *
-     * @param user the {@code User} to be added
-     * @return int number of inserted rows
-     */
     public int createUser(User user) {
         byte[] salt = new byte[16];
 

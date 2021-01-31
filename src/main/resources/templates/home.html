@@ -16,15 +16,15 @@
                 </form>
             </div>
 
-            <div th:if="${actionSuccess}" role="alert" class="alert alert-success alert-dismissible fade show">
-                <span th:text="${actionSuccess}">placeholder text</span>
+            <div th:if="${successMessage}" role="alert" class="alert alert-success alert-dismissible fade show">
+                <span th:text="${successMessage}">placeholder text</span>
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
 
-            <div th:if="${actionError}" role="alert" class="alert alert-success alert-dismissible fade show">
-                <span th:text="${actionError}">placeholder text</span>
+            <div th:if="${errorMessage}" role="alert" class="alert alert-danger alert-dismissible fade show">
+                <span th:text="${errorMessage}">placeholder text</span>
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -42,14 +42,14 @@
                 <div class="tab-content" id="nav-tabContent">
                     <!-- files-->
                     <div th:classappend="${activeTab.equals('files')} ? 'active show' : ''" class="tab-pane fade" id="nav-files" role="tabpanel" aria-labelledby="nav-files-tab">
-                        <form action="#" enctype="multipart/form-data" method="POST">
+                        <form action="#" enctype="multipart/form-data" method="POST" th:action="@{/files/upload}">
                             <div class="container">
                                 <div class="row" style="margin: 1em;">
                                     <div class="col-sm-2">
                                         <label for="fileUpload">Upload a New File:</label>
                                     </div>
                                     <div class="col-sm-6">
-                                        <input type="file" class="form-control-file" id="fileUpload" name="fileUpload">
+                                        <input type="file" class="form-control-file" id="fileUpload" name="fileUpload" required>
                                     </div>
                                     <div class="col-sm-4">
                                         <button type="submit" class="btn btn-dark">Upload</button>
@@ -58,7 +58,11 @@
                             </div>
                         </form>
 
-                        <div class="table-responsive">
+                        <div th:if="${userFiles.size() == 0}" role="alert" class="alert alert-info show">
+                            <span>Such empty! click <a href="#" class="alert-link" onclick="$('#fileUpload').click();">here</a> to upload a new file</span>
+                        </div>
+
+                        <div th:if="${userFiles.size() > 0}" class="table-responsive">
                             <table class="table table-striped" id="fileTable">
                                 <thead>
                                     <tr>
@@ -67,12 +71,18 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
+
+                                <tr th:each="file : ${userFiles}">
                                     <td>
-                                        <a target="_blank" class="btn btn-success">View</a>
-                                        <a  class="btn btn-danger">Delete</a>
+                                        <a href="#" th:href="@{'/files/download/' + ${file.fileName}}" class="btn btn-success">View</a>
+
+                                        <form action="#" th:action="@{/files/delete}" method="post" style="display: inline-block">
+                                            <input type="hidden" th:value="${file.fileName}" name="filename"/>
+                                            <input type="submit" class="btn btn-danger" value="Delete"/>
+                                        </form>
                                     </td>
-                                    <th scope="row">ExampleFile.txt</th>
+
+                                    <th th:text="${file.fileName.length() > 25 ? #strings.substring(file.fileName, 0, 25) : file.fileName}" scope="row">placeholder filename</th>
                                 </tr>
                                 </tbody>
                             </table>
