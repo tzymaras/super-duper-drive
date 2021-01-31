@@ -31,6 +31,10 @@ class CloudStorageApplicationTests {
     public void beforeEach() {
         this.baseURL = "http://localhost:" + this.port;
         driver = new ChromeDriver();
+
+        this.loginPage = new LoginPage(driver);
+        this.signupPage = new SignupPage(driver);
+        this.homePage = new HomePage(driver);
     }
 
     @AfterEach
