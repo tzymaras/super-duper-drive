@@ -11,8 +11,8 @@
     <body class="p-3 mb-2 bg-light text-black">
         <div class="container">
             <div id="logoutDiv">
-                <form action="#" method="POST" th:action="@{/logout}">
-                    <button type="submit" class="btn btn-secondary float-right">Logout</button>
+                <form id="logoutForm" action="#" method="POST" th:action="@{/logout}">
+                    <button id="logout-btn" type="submit" class="btn btn-secondary float-right">Logout</button>
                 </form>
             </div>
 
@@ -91,7 +91,7 @@
 
                     <!-- notes-->
                     <div th:classappend="${activeTab.equals('notes')} ? 'active show' : ''" class="tab-pane fade" id="nav-notes" role="tabpanel" aria-labelledby="nav-notes-tab">
-                        <button id="create-note-btn" style="margin: 0.25em;" type="button" class="btn btn-info float-right">
+                        <button id="create-note-btn" style="margin: 0.25em;" type="button" name="create-note-btn" class="btn btn-info float-right">
                             + Add a New Note
                         </button>
 
@@ -100,7 +100,7 @@
                                 <span>Such empty! click <a href="#" class="alert-link" onclick="$('#noteModal').modal().show();">here</a> to create a new note</span>
                             </div>
 
-                            <table th:if="${userNotes.size() > 0}" class="table table-striped" id="userTable">
+                            <table th:if="${userNotes.size() > 0}" class="table table-striped" id="notesTable">
                                 <thead>
                                     <tr>
                                         <th style="width: 20%" scope="col"></th>
@@ -109,20 +109,20 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr th:each="note : ${userNotes}">
+                                    <tr class="note-row" th:each="note : ${userNotes}">
                                         <td>
                                             <button class="btn btn-success edit-note"
                                                th:data-note-id="${note.noteId}"
                                                th:data-note-title="${note.noteTitle}"
                                                th:data-note-desc="${note.noteDescription}">Edit</button>
 
-                                            <form method="post" action="#" th:action="@{/notes}" style="display: inline-block">
+                                            <form method="post" action="#" th:data-delete-note-title="${note.noteTitle}" th:action="@{/notes}" style="display: inline-block">
                                                 <input type="hidden" name="noteId" th:value="${note.noteId}"/>
                                                 <input type="hidden" name="action" value="delete"/>
                                                 <input type="submit" class="btn btn-danger delete-note-btn" value="Delete"/>
                                             </form>
                                         </td>
-                                        <th scope="row" th:text="${note.noteTitle}">Example Note Title</th>
+                                        <th scope="row" th:text="${note.noteTitle}" class="th-note-title">Example Note Title</th>
                                         <td th:text="${note.noteDescription.length() > 30 ? #strings.substring(note.noteDescription, 0, 30) : note.noteDescription}">Example Note Description </td>
                                     </tr>
                                 </tbody>
@@ -139,13 +139,13 @@
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <form action="#" method="POST" th:action="@{/notes}">
+                                        <form id="note-form" action="#" method="POST" th:action="@{/notes}">
                                             <input type="hidden" name="noteId" id="note-id">
                                             <input type="hidden" name="action" id="note-action" value="create">
 
                                             <div class="form-group">
                                                 <label for="note-title" class="col-form-label">Title</label>
-                                                <input type="text" name= "noteTitle" class="form-control" id="note-title" maxlength="20" required>
+                                                <input type="text" name="noteTitle" class="form-control" id="note-title" maxlength="20" required>
                                             </div>
 
                                             <div class="form-group">
