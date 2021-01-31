@@ -166,7 +166,7 @@
 
                     <!-- credentials-->
                     <div th:classappend="${activeTab.equals('credentials')} ? 'active show' : ''" class="tab-pane fade" id="nav-credentials" role="tabpanel" aria-labelledby="nav-credentials-tab">
-                        <button id="create-creds-btn" style="margin: 0.25em;" type="button" class="btn btn-info float-right">
+                        <button id="create-credentials-btn" style="margin: 0.25em;" type="button" class="btn btn-info float-right">
                             + Add a New Credential
                         </button>
 
@@ -193,15 +193,15 @@
                                            th:data-cred-username="${cred.username}"
                                            th:data-cred-plain-password="${cred.plainPassword}">Edit</button>
 
-                                        <form method="post" action="#" th:action="@{/credentials}" style="display: inline-block">
+                                        <form method="post" action="#" th:data-delete-url="${cred.url}" th:action="@{/credentials}" style="display: inline-block">
                                             <input type="hidden" name="credentialId" th:value="${cred.credentialId}"/>
                                             <input type="hidden" name="action" value="delete"/>
                                             <input type="submit" class="btn btn-danger delete-cred-btn" value="Delete"/>
                                         </form>
                                     </td>
-                                    <th scope="row" th:text="${cred.url.length() > 28 ? #strings.substring(cred.url, 0, 28) : cred.url}">Example Credential URL</th>
-                                    <td th:text="${cred.username.length() > 28 ? #strings.substring(cred.username, 0, 28) : cred.username}">Example Credential Username</td>
-                                    <td th:text="${cred.password.length() > 28 ? #strings.substring(cred.password, 0, 28) : cred.password}">Example Credential Password</td>
+                                    <th scope="row" class="th-credentials-url" th:text="${cred.url.length() > 28 ? #strings.substring(cred.url, 0, 28) : cred.url}">Example Credential URL</th>
+                                    <td class="td-credentials-username" th:text="${cred.username.length() > 28 ? #strings.substring(cred.username, 0, 28) : cred.username}">Example Credential Username</td>
+                                    <td class="td-credentials-password" th:text="${cred.password.length() > 28 ? #strings.substring(cred.password, 0, 28) : cred.password}">Example Credential Password</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -218,23 +218,23 @@
                                     </div>
 
                                     <div class="modal-body">
-                                        <form action="#" method="POST" th:action="@{/credentials}">
+                                        <form id="formCredentials" action="#" method="POST" th:action="@{/credentials}">
                                             <input type="hidden" name="credentialId" id="credential-id">
                                             <input type="hidden" name="action" id="credential-action" value="create">
 
                                             <div class="form-group">
                                                 <label for="note-title" class="col-form-label">URL</label>
-                                                <input type="text" name= "url" class="form-control" id="credential-url" maxlength="100" required>
+                                                <input type="text" name="url" class="form-control" id="credential-url" maxlength="100" required>
                                             </div>
 
                                             <div class="form-group">
                                                 <label for="note-title" class="col-form-label">Username</label>
-                                                <input type="text" name= "username" class="form-control" id="credential-username" maxlength="30" required>
+                                                <input type="text" name="username" class="form-control" id="credential-username" maxlength="30" required>
                                             </div>
 
                                             <div class="form-group">
                                                 <label for="note-title" class="col-form-label">Password</label>
-                                                <input type="text" name= "password" class="form-control" id="credential-password" maxlength="30" required>
+                                                <input type="text" name="password" class="form-control" id="credential-password" maxlength="30" required>
                                             </div>
 
                                             <button id="credentialSubmit" type="submit" class="d-none"></button>
@@ -281,7 +281,7 @@
                     $('#noteModal').modal('show');
                 });
 
-                $('#create-creds-btn').on('click', function() {
+                $('#create-credentials-btn').on('click', function() {
                     $('#credential-id').val('');
                     $('#credential-url').val('');
                     $('#credential-username').val('');

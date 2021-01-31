@@ -1,11 +1,12 @@
 package com.udacity.jwdnd.course1.cloudstorage;
 
-import com.udacity.jwdnd.course1.cloudstorage.model.Note;
+import com.udacity.jwdnd.course1.cloudstorage.model.*;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.assertj.core.internal.bytebuddy.utility.RandomString;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
@@ -14,7 +15,7 @@ class CloudStorageApplicationTests {
 
     @LocalServerPort
     private int port;
-    private WebDriver driver;
+    private static WebDriver driver;
     private String baseURL;
 
     private LoginPage loginPage;
@@ -29,18 +30,18 @@ class CloudStorageApplicationTests {
     @BeforeEach
     public void beforeEach() {
         this.baseURL = "http://localhost:" + this.port;
-        this.driver = new ChromeDriver();
-
-        this.loginPage = new LoginPage(this.driver);
-        this.signupPage = new SignupPage(this.driver);
-        this.homePage = new HomePage(this.driver);
+        driver = new ChromeDriver();
     }
 
     @AfterEach
     public void afterEach() {
-        if (this.driver != null) {
-            driver.quit();
-        }
+        driver.quit();
+    }
+
+    @AfterAll
+    public static void afterAll() {
+        driver.quit();
+        driver = null;
     }
 
     @Test
@@ -119,11 +120,11 @@ class CloudStorageApplicationTests {
         homePage.switchToNotesTab();
         homePage.waitForNotesList();
 
-        boolean updateNoteExists = driver.findElements(By.className("th-note-title"))
+        boolean updatedNoteExists = driver.findElements(By.className("th-note-title"))
                 .stream()
                 .anyMatch(webElement -> webElement.getText().equals("updatedTitle"));
 
-        Assertions.assertTrue(updateNoteExists);
+        Assertions.assertTrue(updatedNoteExists);
     }
 
     @Test
@@ -142,11 +143,88 @@ class CloudStorageApplicationTests {
         homePage.switchToNotesTab();
         homePage.waitForNotesList();
 
-        boolean noteExists = driver.findElements(By.className("th-note-title"))
+        boolean noteNotDisplayed = driver.findElements(By.className("th-note-title"))
                 .stream()
                 .noneMatch(webElement -> webElement.getText().equals(note.getNoteTitle()));
 
-        Assertions.assertTrue(noteExists);
+        Assertions.assertTrue(noteNotDisplayed);
+    }
+
+    @Test
+    public void testCreateCredentialsVerifyTheyAreDisplayedVerifyDidsplayedPasswordIsEncrypted() {
+        this.createAndLogUserIn();
+
+        Credential credential = this.createCredentials();
+
+        homePage.switchToCredentialsTab();
+        homePage.waitForCredentialsList();
+
+        boolean credentialExists = driver.findElements(By.className("th-credentials-url"))
+                .stream()
+                .anyMatch(el -> el.getText().equals(credential.getUrl()));
+
+        Assertions.assertTrue(credentialExists);
+
+        boolean passwordIsNotDisplayed = driver.findElements(By.className("td-credentials-password"))
+                .stream()
+                .noneMatch(el -> el.getText().equals(credential.getPassword()));
+
+        Assertions.assertTrue(passwordIsNotDisplayed);
+    }
+
+    @Test
+    public void testCreateCredentialsCheckEditablePasswordIsUnecryptedEditVerifyChanges() {
+        this.createAndLogUserIn();
+
+        Credential credential = this.createCredentials();
+
+        homePage.switchToCredentialsTab();
+        homePage.waitForCredentialsList();
+
+        String path = String.format("//*[@data-cred-url='%s']", credential.getUrl());
+        new WebDriverWait(driver, 10).until(w -> driver.findElement(By.xpath(path))).click();
+
+        String passwordInputValue = driver.findElement(By.name("password")).getAttribute("value");
+        boolean viewablePasswordEqualsSubmitted = credential.getPassword().equals(passwordInputValue);
+
+        Assertions.assertTrue(viewablePasswordEqualsSubmitted);
+
+        homePage.updateCredentials("updatedUrl", "updatedUsername", "passUp");
+
+        homePage.switchToCredentialsTab();
+        homePage.waitForCredentialsList();
+
+        boolean updatedUrlDisplayed = driver.findElements(By.className("th-credentials-url"))
+                .stream()
+                .anyMatch(el -> el.getText().equals("updatedUrl"));
+
+        boolean updatedUsernameDisplayed = driver.findElements(By.className("td-credentials-username"))
+                .stream()
+                .anyMatch(el -> el.getText().equals("updatedUsername"));
+
+        Assertions.assertTrue(updatedUrlDisplayed);
+        Assertions.assertTrue(updatedUsernameDisplayed);
+    }
+
+    @Test
+    public void testDeleteCredentialVerifyNotDisplayed() {
+        this.createAndLogUserIn();
+
+        Credential credential = this.createCredentials();
+
+        homePage.switchToCredentialsTab();
+        homePage.waitForCredentialsList();
+
+        String path = String.format("//*[@data-delete-url='%s']", credential.getUrl());
+        driver.findElement(By.xpath(path)).submit();
+
+        homePage.switchToCredentialsTab();
+
+        boolean credentialNotDisplayed = driver.findElements(By.className("th-credentials-url"))
+                .stream()
+                .noneMatch(el -> el.getText().equals(credential.getUrl()));
+
+        Assertions.assertTrue(credentialNotDisplayed);
     }
 
     private Note createNote() {
@@ -163,6 +241,24 @@ class CloudStorageApplicationTests {
         note.setNoteDescription(noteDescription);
 
         return note;
+    }
+
+    private Credential createCredentials() {
+        String url = "https://www.randomurl.de";
+        String username = RandomString.make(10);
+        String password = "pass";
+
+        driver.get(this.baseURL + homePage.getPageUrl());
+
+        homePage.switchToCredentialsTab();
+        homePage.createCredentials(username, url, password);
+
+        Credential credential = new Credential();
+        credential.setUrl(url);
+        credential.setUsername(username);
+        credential.setPassword(password);
+
+        return credential;
     }
 
     private void createAndLogUserIn() {
