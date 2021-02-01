@@ -91,6 +91,9 @@ class CloudStorageApplicationTests {
         homePage.logUserOut();
         Assertions.assertEquals(loginPage.getPageTitle(), driver.getTitle());
         Assertions.assertTrue(loginPage.isUserLoggedOut());
+
+        driver.get(this.baseURL + homePage.getPageUrl());
+        Assertions.assertEquals(loginPage.getPageTitle(), driver.getTitle());
     }
 
     @Test
