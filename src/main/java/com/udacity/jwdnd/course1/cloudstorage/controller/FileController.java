@@ -1,5 +1,6 @@
 package com.udacity.jwdnd.course1.cloudstorage.controller;
 
+import com.udacity.jwdnd.course1.cloudstorage.constants.FrontEndMessages;
 import com.udacity.jwdnd.course1.cloudstorage.model.*;
 import com.udacity.jwdnd.course1.cloudstorage.services.*;
 import org.slf4j.*;
@@ -35,12 +36,12 @@ public class FileController {
 
         String fileName = multipartFile.getOriginalFilename();
         if (null == fileName || fileName.isBlank()) {
-            redirectAttributes.addFlashAttribute("errorMessage", "empty file name");
+            redirectAttributes.addFlashAttribute("errorMessage", FrontEndMessages.ERROR_FILES_EMPTY_FILENAME);
             return "redirect:/home";
         }
 
         if (this.fileService.fileExists(fileName, user.getUserId())) {
-            redirectAttributes.addFlashAttribute("errorMessage", String.format("file: %s already exists", fileName));
+            redirectAttributes.addFlashAttribute("errorMessage", String.format(FrontEndMessages.ERROR_FILES_EXISTS, fileName));
             return "redirect:/home";
         }
 
@@ -54,11 +55,11 @@ public class FileController {
 
         if (this.fileService.insert(file) == 0) {
             this.logger.error(String.format("failed uploading file:%s", file));
-            redirectAttributes.addFlashAttribute("errorMessage", "an internal error occured, please try again later");
+            redirectAttributes.addFlashAttribute("errorMessage", FrontEndMessages.ERROR_INTERNAL);
             return "redirect:/home";
         }
 
-        redirectAttributes.addFlashAttribute("successMessage", "File successfully uploaded");
+        redirectAttributes.addFlashAttribute("successMessage", FrontEndMessages.SUCCESS_FILES_UPLOAD);
 
         return "redirect:/home";
     }
@@ -87,11 +88,11 @@ public class FileController {
 
         if (this.fileService.delete(filename, user.getUserId()) == 0) {
             this.logger.error(String.format("failed deleting file with id:%s", filename));
-            redirectAttributes.addAttribute("errorMessage", "an internal error occurred, please try again later");
+            redirectAttributes.addAttribute("errorMessage", FrontEndMessages.ERROR_INTERNAL);
             return "redirect:/home";
         }
 
-        redirectAttributes.addFlashAttribute("successMessage", "File successfully deleted");
+        redirectAttributes.addFlashAttribute("successMessage", FrontEndMessages.SUCCESS_FILES_DELETE);
 
         return "redirect:/home";
     }

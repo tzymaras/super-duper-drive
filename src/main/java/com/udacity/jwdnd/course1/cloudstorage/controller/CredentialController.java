@@ -1,5 +1,6 @@
 package com.udacity.jwdnd.course1.cloudstorage.controller;
 
+import com.udacity.jwdnd.course1.cloudstorage.constants.FrontEndMessages;
 import com.udacity.jwdnd.course1.cloudstorage.model.*;
 import com.udacity.jwdnd.course1.cloudstorage.services.*;
 import org.slf4j.*;
@@ -36,32 +37,32 @@ public class CredentialController {
             case "create":
                 if (this.credentialService.insert(credential) == 0) {
                     this.logger.error(String.format("failed creating credential: %s", credential));
-                    redirectAttributes.addFlashAttribute("errorMessage", "an internal error occured, please try again later");
+                    redirectAttributes.addFlashAttribute("errorMessage", FrontEndMessages.ERROR_INTERNAL);
                     return "redirect:home";
                 }
 
-                redirectAttributes.addFlashAttribute("successMessage", "Credentials successfully created");
+                redirectAttributes.addFlashAttribute("successMessage", FrontEndMessages.SUCCESS_CREDS_CREATE);
                 break;
             case "edit":
                 if (this.credentialService.update(credential) == 0) {
                     this.logger.error(String.format("failed updating credential: %s", credential));
-                    redirectAttributes.addFlashAttribute("errorMessage", "an internal error occured, please try again later");
+                    redirectAttributes.addFlashAttribute("errorMessage", FrontEndMessages.ERROR_INTERNAL);
                     return "redirect:home";
                 }
 
-                redirectAttributes.addFlashAttribute("successMessage", "Credentials successfully updated");
+                redirectAttributes.addFlashAttribute("successMessage", FrontEndMessages.SUCCESS_CREDS_EDIT);
                 break;
             case "delete":
                 if (this.credentialService.delete(credential) == 0) {
                     this.logger.error(String.format("failed deleting credential: %s", credential));
-                    redirectAttributes.addFlashAttribute("errorMessage", "an internal error occured, please try again later");
+                    redirectAttributes.addFlashAttribute("errorMessage", FrontEndMessages.ERROR_INTERNAL);
                     return "redirect:home";
                 }
 
-                redirectAttributes.addFlashAttribute("successMessage", "Credentials successfully deleted");
+                redirectAttributes.addFlashAttribute("successMessage", FrontEndMessages.SUCCESS_CREDS_DELETE);
                 break;
             default:
-                redirectAttributes.addFlashAttribute("errorMessage", "unknown action");
+                redirectAttributes.addFlashAttribute("errorMessage", FrontEndMessages.ERROR_UNKNOWN_ACTION);
         }
 
         return "redirect:home";

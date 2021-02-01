@@ -1,5 +1,6 @@
 package com.udacity.jwdnd.course1.cloudstorage.controller;
 
+import com.udacity.jwdnd.course1.cloudstorage.constants.FrontEndMessages;
 import com.udacity.jwdnd.course1.cloudstorage.model.*;
 import com.udacity.jwdnd.course1.cloudstorage.services.*;
 import org.slf4j.*;
@@ -31,20 +32,20 @@ public class NoteController {
             case "create":
                 if (this.noteService.insert(note) == 0) {
                     this.logger.error(String.format("failed creating note: %s", note));
-                    redirectAttributes.addFlashAttribute("errorMessage", "there was an internal error. please try again later");
+                    redirectAttributes.addFlashAttribute("errorMessage", FrontEndMessages.ERROR_INTERNAL);
                     return "redirect:home";
                 }
 
-                redirectAttributes.addFlashAttribute("successMessage", "Note successfully created");
+                redirectAttributes.addFlashAttribute("successMessage", FrontEndMessages.SUCCESS_NOTES_CREATE);
                 break;
             case "edit":
                 if (this.noteService.update(note) == 0) {
                     this.logger.error(String.format("failed updating note: %s", note));
-                    redirectAttributes.addFlashAttribute("errorMessage", "there was an internal error. please try again later");
+                    redirectAttributes.addFlashAttribute("errorMessage", FrontEndMessages.ERROR_INTERNAL);
                     return "redirect:home";
                 }
 
-                redirectAttributes.addFlashAttribute("successMessage", "Note successfully updated");
+                redirectAttributes.addFlashAttribute("successMessage", FrontEndMessages.SUCCESS_NOTES_EDIT);
                 break;
             case "delete":
                 if (this.noteService.delete(note) == 0) {
@@ -53,10 +54,10 @@ public class NoteController {
                     return "redirect:home";
                 }
 
-                redirectAttributes.addFlashAttribute("successMessage", "Note successfully deleted");
+                redirectAttributes.addFlashAttribute("successMessage", FrontEndMessages.SUCCESS_NOTES_DELETE);
                 break;
             default:
-                redirectAttributes.addFlashAttribute("errorMessage", "unknown action");
+                redirectAttributes.addFlashAttribute("errorMessage", FrontEndMessages.ERROR_UNKNOWN_ACTION);
         }
 
         return "redirect:home";
