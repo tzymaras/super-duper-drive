@@ -16,5 +16,6 @@ class PasswordValidatorTest {
         Assertions.assertFalse(PasswordValidator.isPasswordValid("justlettersPassWord"));
 
         Assertions.assertTrue(PasswordValidator.isPasswordValid("4584456Aa@#"));
+        Assertions.assertTrue(PasswordValidator.isPasswordValid("n!K2NFqU6ZCvT6!"));
     }
 }

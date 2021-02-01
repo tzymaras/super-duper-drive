@@ -8,6 +8,7 @@ import org.slf4j.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class SecurityController {
@@ -29,7 +30,7 @@ public class SecurityController {
     }
 
     @PostMapping("/signup")
-    public String signUpStore(@ModelAttribute User user, Model model) {
+    public String signUpStore(@ModelAttribute User user, Model model, RedirectAttributes redirectAttributes) {
         if (this.userService.userWithUsernameExists(user.getUsername())) {
             model.addAttribute("signupError", FrontEndMessages.ERROR_SIGNUP_USERNAME_EXISTS);
             return "signup";
@@ -52,8 +53,8 @@ public class SecurityController {
             return "signup";
         }
 
-        model.addAttribute("signupSuccess", true);
+        redirectAttributes.addFlashAttribute("signupSuccess", true);
 
-        return "signup";
+        return "redirect:login";
     }
 }

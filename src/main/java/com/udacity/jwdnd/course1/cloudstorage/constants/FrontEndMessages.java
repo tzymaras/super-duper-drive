@@ -1,9 +1,14 @@
 package com.udacity.jwdnd.course1.cloudstorage.constants;
 
 public interface FrontEndMessages {
+    String ERROR_RESPONSE_403 = "You don't have permission to access this page";
+    String ERROR_RESPONSE_404 = "Nothing to see here, move along...";
+    String ERROR_RESPONSE_INTERNAL = "Looks like sth went wrong on our end";
+
     String ERROR_INTERNAL = "an internal error occured, please try again later";
     String ERROR_UNKNOWN_ACTION = "unknown action";
 
+    String ERROR_FILES_EXCEEDS_MAX_UPLOAD_LIMIT = "File size exceeds upload limit";
     String ERROR_FILES_EMPTY_FILENAME = "empty file name";
     String ERROR_FILES_EXISTS = "file: %s already exists";
 

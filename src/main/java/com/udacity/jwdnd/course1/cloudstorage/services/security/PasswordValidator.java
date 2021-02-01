@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 public class PasswordValidator {
     public static final int PASSWORD_MIN_LENGTH = 8;
     public static final int PASSWORD_MAX_LENGTH = 20;
-    private static final String passwordRegex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,20}$";
+    private static final String passwordRegex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&+=])(?=\\S+$).{8,20}$";
 
     /**
      * Validates a {@code User} password. Must be longer than {@value PASSWORD_MIN_LENGTH} characters, smaller than
