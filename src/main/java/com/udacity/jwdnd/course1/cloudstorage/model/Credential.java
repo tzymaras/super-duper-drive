@@ -76,7 +76,6 @@ public class Credential {
                 ", url='" + url + '\'' +
                 ", username='" + username + '\'' +
                 ", key='" + key + '\'' +
-                ", password='" + password + '\'' +
                 ", userId=" + userId +
                 '}';
     }
