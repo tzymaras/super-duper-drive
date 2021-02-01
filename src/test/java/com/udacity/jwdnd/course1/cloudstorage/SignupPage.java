@@ -22,7 +22,10 @@ public class SignupPage {
     @FindBy(id = "messageSignupSuccess")
     private WebElement registerSuccessMsg;
 
+    private final WebDriver driver;
+
     public SignupPage(WebDriver webDriver) {
+        this.driver = webDriver;
         PageFactory.initElements(webDriver, this);
     }
 
@@ -31,14 +34,14 @@ public class SignupPage {
     }
 
     public void fillInForm(String firstName, String lastName, String username, String password) {
-        this.inputUsername.sendKeys(username);
-        this.inputFirstName.sendKeys(firstName);
-        this.inputLastName.sendKeys(lastName);
-        this.inputPassword.sendKeys(password);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].value='" + firstName + "';", inputFirstName);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].value='" + lastName + "';", inputLastName);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].value='" + username + "';", inputUsername);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].value='" + password + "';", inputPassword);
     }
 
     public void submitForm() {
-        this.submitButton.click();
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", submitButton);
     }
 
     public void registerNewUser(String firstName, String lastName, String username, String password) {

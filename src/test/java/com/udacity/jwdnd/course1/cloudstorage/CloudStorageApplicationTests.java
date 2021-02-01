@@ -12,11 +12,11 @@ import org.springframework.boot.web.server.LocalServerPort;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class CloudStorageApplicationTests {
-
     @LocalServerPort
     private int port;
-    private static WebDriver driver;
     private String baseURL;
+
+    private static WebDriver driver;
 
     private LoginPage loginPage;
     private SignupPage signupPage;
@@ -186,7 +186,10 @@ class CloudStorageApplicationTests {
         homePage.waitForCredentialsList();
 
         String path = String.format("//*[@data-cred-url='%s']", credential.getUrl());
-        new WebDriverWait(driver, 10).until(w -> driver.findElement(By.xpath(path))).click();
+        new WebDriverWait(driver, 10).until(w -> driver.findElement(By.xpath(path)));
+
+        WebElement element = driver.findElement(By.xpath(path));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
 
         String passwordInputValue = driver.findElement(By.name("password")).getAttribute("value");
         boolean viewablePasswordEqualsSubmitted = credential.getPassword().equals(passwordInputValue);

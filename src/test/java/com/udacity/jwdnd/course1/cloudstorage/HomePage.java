@@ -6,9 +6,12 @@ import org.openqa.selenium.support.ui.*;
 
 public class HomePage {
     private final WebDriverWait webDriverWait;
+    private final WebDriver driver;
 
     public HomePage(WebDriver webDriver) {
         PageFactory.initElements(webDriver, this);
+
+        this.driver = webDriver;
         this.webDriverWait = new WebDriverWait(webDriver, 10);
     }
 
@@ -66,20 +69,21 @@ public class HomePage {
     }
 
     public void logUserOut() {
-        this.logoutForm.submit();
+        ((JavascriptExecutor) driver).executeScript("arguments[0].submit();", logoutForm);
     }
 
     public void createCredentials(String username, String url, String plainPassword) {
-        this.waitToBeClickable(this.createCredentialsBtn).click();
+        this.waitToBeClickable(this.createCredentialsBtn);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", createCredentialsBtn);
+
         this.waitToBeVisible(this.inputCredentialsUrl);
         this.waitToBeVisible(this.inputCredentialsUsername);
         this.waitToBeVisible(this.inputCredentialsPassword);
 
-        this.inputCredentialsUrl.sendKeys(url);
-        this.inputCredentialsUsername.sendKeys(username);
-        this.inputCredentialsPassword.sendKeys(plainPassword);
-
-        this.formCredentials.submit();
+        ((JavascriptExecutor) driver).executeScript("arguments[0].value='" + url + "';", inputCredentialsUrl);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].value='" + username + "';", inputCredentialsUsername);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].value='" + plainPassword + "';", inputCredentialsPassword);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].submit();", formCredentials);
     }
 
     public void updateCredentials(String url, String username, String password) {
@@ -87,46 +91,40 @@ public class HomePage {
             this.waitToBeVisible(this.formCredentials);
         }
 
-        this.inputCredentialsUrl.clear();
-        this.inputCredentialsUsername.clear();
-        this.inputCredentialsPassword.clear();
-
-        this.inputCredentialsUrl.sendKeys(url);
-        this.inputCredentialsUsername.sendKeys(username);
-        this.inputCredentialsPassword.sendKeys(password);
-
-        this.formCredentials.submit();
+        ((JavascriptExecutor) driver).executeScript("arguments[0].value='" + url + "';", inputCredentialsUrl);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].value='" + username + "';", inputCredentialsUsername);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].value='" + password + "';", inputCredentialsPassword);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].submit();", formCredentials);
     }
 
     public void createNote(String title, String description) {
-        this.waitToBeClickable(this.createNoteBtn).click();
+        this.waitToBeClickable(this.createNoteBtn);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", createNoteBtn);
+
         this.waitToBeVisible(this.inputNoteTitle);
-
-        this.inputNoteTitle.sendKeys(title);
-        this.inputNoteDescription.sendKeys(description);
-
-        this.formNote.submit();
+        ((JavascriptExecutor) driver).executeScript("arguments[0].value='" + title + "';", inputNoteTitle);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].value='" + description + "';", inputNoteDescription);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].submit();", formNote);
     }
 
     public void updateNote(WebElement editButtonOfNote, String newTitle, String newDescription) {
-        this.waitToBeClickable(editButtonOfNote).click();
+        this.waitToBeClickable(editButtonOfNote);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", editButtonOfNote);
+
         this.waitToBeVisible(this.inputNoteTitle);
-
-        this.inputNoteTitle.clear();
-        this.inputNoteDescription.clear();
-
-        this.inputNoteTitle.sendKeys(newTitle);
-        this.inputNoteDescription.sendKeys(newDescription);
-
-        this.formNote.submit();
+        ((JavascriptExecutor) driver).executeScript("arguments[0].value='" + newTitle + "';", inputNoteTitle);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].value='" + newDescription + "';", inputNoteDescription);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].submit();", formNote);
     }
 
     public void switchToNotesTab() {
-        this.waitToBeClickable(this.notesTab).click();
+        this.waitToBeClickable(this.notesTab);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", notesTab);
     }
 
     public void switchToCredentialsTab() {
-        this.waitToBeClickable(this.credentialsTab).click();
+        this.waitToBeClickable(this.credentialsTab);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", credentialsTab);
     }
 
     public void waitForNotesList() {

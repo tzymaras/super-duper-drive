@@ -16,7 +16,10 @@ public class LoginPage {
     @FindBy(id = "messageLoggedOut")
     private WebElement messageLoggedOut;
 
+    private final WebDriver driver;
+
     public LoginPage(WebDriver webDriver) {
+        this.driver = webDriver;
         PageFactory.initElements(webDriver, this);
     }
 
@@ -29,9 +32,9 @@ public class LoginPage {
     }
 
     public void logUserIn(String username, String password) {
-        this.inputUsername.sendKeys(username);
-        this.inputPassword.sendKeys(password);
-        this.submitButton.click();
+        ((JavascriptExecutor) driver).executeScript("arguments[0].value='" + username + "';", inputUsername);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].value='" + password + "';", inputPassword);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", submitButton);
     }
 
     public boolean isUserLoggedOut() {
